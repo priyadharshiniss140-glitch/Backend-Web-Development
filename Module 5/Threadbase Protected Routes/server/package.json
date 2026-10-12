@@ -1,0 +1,14 @@
+{
+  "name": "threadbase-protected-routes-starter-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Minimal auth scaffold — signs a demo access token on POST /auth/login. Do NOT edit.",
+  "scripts": { "start": "node server.js" },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2"
+  }
+}
