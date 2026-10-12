@@ -2,11 +2,11 @@
   "name": "fswd-m2-axios-starter",
   "version": "1.0.0",
   "private": true,
-  "description": "Axios instance and Vite environment variable assignment",
+  "description": "Starter repo — build a configured Axios instance + service layer driven by a Vite env var.",
   "scripts": {
-    "setup": "npm install && npm --prefix Axios-Instance-and-Vite-Environment-Variables install && npm --prefix Axios-Instance-and-Vite-Environment-Variables/server install && npm --prefix Axios-Instance-and-Vite-Environment-Variables/client install",
-    "server": "npm --prefix Axios-Instance-and-Vite-Environment-Variables/server run dev",
-    "client": "npm --prefix Axios-Instance-and-Vite-Environment-Variables/client run dev",
+    "setup": "npm install && npm --prefix server install && npm --prefix client install",
+    "server": "npm --prefix server run dev",
+    "client": "npm --prefix client run dev",
     "dev": "concurrently -n SERVER,CLIENT -c blue,magenta \"npm run server\" \"npm run client\""
   },
   "devDependencies": {
