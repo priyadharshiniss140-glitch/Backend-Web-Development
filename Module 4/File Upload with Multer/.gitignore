@@ -1,0 +1,6 @@
+node_modules/
+.env
+
+# Keep uploaded test images out of version control.
+uploads/*
+!uploads/.gitkeep
