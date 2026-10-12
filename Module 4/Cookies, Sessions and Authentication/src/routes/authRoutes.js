@@ -1,20 +1,38 @@
-const express = require('express');
+const express = require("express");
+const authService = require("../services/authService");
+const requireSession = require("../middleware/requireSession");
+const { COOKIE_NAME, COOKIE_OPTIONS } = require("../config/cookieConfig");
 
 const router = express.Router();
 
-router.post('/login', async (req, res, next) => {
-  // TODO: validate credentials, create a server session, and set signed `sid` cookie.
-  res.status(501).json({ error: { code: 'NOT_IMPLEMENTED', message: 'Implement login' } });
+router.post("/login", async (req, res, next) => {
+  try {
+    const { sessionId, user } = await authService.login(req.body);
+    res.cookie(COOKIE_NAME, sessionId, COOKIE_OPTIONS);
+    return res.status(200).json(user);
+  } catch (error) {
+    return next(error);
+  }
 });
 
-router.get('/me', async (req, res, next) => {
-  // TODO: resolve signed cookie through the server-side session store.
-  res.status(501).json({ error: { code: 'NOT_IMPLEMENTED', message: 'Implement protected identity' } });
+router.get("/me", requireSession, (req, res) => {
+  return res.status(200).json(req.user);
 });
 
-router.post('/logout', async (req, res, next) => {
-  // TODO: destroy server session and clear cookie using matching options.
-  res.status(501).json({ error: { code: 'NOT_IMPLEMENTED', message: 'Implement logout' } });
+router.post("/logout", async (req, res, next) => {
+  try {
+    const signedSessionId = req.signedCookies?.[COOKIE_NAME];
+    const sessionId =
+      typeof signedSessionId === "string" && signedSessionId.length > 0
+        ? signedSessionId
+        : null;
+
+    await authService.logout(sessionId);
+    res.clearCookie(COOKIE_NAME, COOKIE_OPTIONS);
+    return res.status(204).end();
+  } catch (error) {
+    return next(error);
+  }
 });
 
 module.exports = router;
