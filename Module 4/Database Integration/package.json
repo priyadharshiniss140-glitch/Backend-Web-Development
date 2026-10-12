@@ -2,7 +2,6 @@
   "name": "database-integration-starter",
   "version": "1.0.0",
   "private": true,
-  "description": "PostgreSQL-backed repository implementation using Prisma",
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",
@@ -11,7 +10,7 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy",
-    "prisma:seed": "prisma db seed",
+    "prisma:seed": "node prisma/seed.js",
     "postinstall": "prisma generate"
   },
   "dependencies": {
@@ -21,8 +20,5 @@
   },
   "devDependencies": {
     "prisma": "^6.9.0"
-  },
-  "prisma": {
-    "seed": "node prisma/seed.js"
   }
 }
