@@ -15,6 +15,14 @@ npm run dev
 
 On Windows PowerShell, use `Copy-Item .env.example .env` instead of `cp`.
 
+The `setup` script generates the Prisma client, pushes the SQLite schema, and seeds the demo account. Equivalent individual commands are:
+
+```bash
+npm run db:push
+npm run db:seed
+npm run dev
+```
+
 Before starting, replace the `COOKIE_SECRET` placeholder in `.env` with at least 32 random characters. Keep `COOKIE_SECURE=false` for local HTTP testing. In production, the app always sets `Secure`; deploy behind HTTPS. Do not commit `.env` or paste secrets into logs.
 
 Seeded local demo account: `sam@example.com` / `SessionDemo!48`.
@@ -62,6 +70,12 @@ Call the protected identity endpoint using the saved cookie:
 
 ```bash
 curl -i -b cookies.txt http://localhost:3000/auth/me
+```
+
+Try an absent or altered cookie and expect **401**:
+
+```bash
+curl -i http://localhost:3000/auth/me
 ```
 
 Log out and verify that the old cookie no longer authenticates:
