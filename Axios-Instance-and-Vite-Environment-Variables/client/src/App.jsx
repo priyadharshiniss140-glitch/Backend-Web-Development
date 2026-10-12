@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { getThreads, createThread } from "./services/threads.service";
 
+// App.jsx is already wired for you. It calls the service functions you implement.
+// It also logs the env var so you can grab the screenshot for your PR.
 console.log("VITE_API_URL:", import.meta.env.VITE_API_URL);
 
 export default function App() {
   const [threads, setThreads] = useState([]);
-  const [status, setStatus] = useState("loading");
+  const [status, setStatus] = useState("loading"); // loading | ready | todo | error
   const [error, setError] = useState("");
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -17,8 +19,11 @@ export default function App() {
       setThreads(data);
       setStatus("ready");
     } catch (e) {
-      setError(String(e?.message || e));
-      setStatus("error");
+      if (e?.message === "NOT_IMPLEMENTED") setStatus("todo");
+      else {
+        setError(String(e?.message || e));
+        setStatus("error");
+      }
     }
   }
 
@@ -36,7 +41,7 @@ export default function App() {
       setBody("");
       await load();
     } catch (e) {
-      setError(String(e?.message || e));
+      setError(e?.message === "NOT_IMPLEMENTED" ? "Implement createThread() first." : String(e?.message || e));
     } finally {
       setSubmitting(false);
     }
@@ -48,7 +53,19 @@ export default function App() {
       <p className="muted">
         API base URL: <code>{String(import.meta.env.VITE_API_URL)}</code> (open the console too)
       </p>
+
+      {status === "todo" && (
+        <div className="notice">
+          <strong>Service layer not implemented yet.</strong>
+          <p style={{ marginTop: "0.5rem" }}>
+            Implement <code>src/services/apiClient.js</code> and{" "}
+            <code>src/services/threads.service.js</code>, then this list will render.
+          </p>
+        </div>
+      )}
+
       {status === "error" && <p className="err">Error: {error}</p>}
+
       {status === "ready" && (
         <>
           <form onSubmit={onSubmit}>
@@ -70,6 +87,7 @@ export default function App() {
             </button>
             {error && <span className="err">{error}</span>}
           </form>
+
           {threads.map((t) => (
             <div className="card" key={t.id}>
               <h3>{t.title}</h3>
