@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:15
+    env_file:
+      - .env
+    volumes:
+      - feedbox_pgdata:/var/lib/postgresql/data
+    networks:
+      - data
+
+  api:
+    build: .
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+    networks:
+      - frontend
+      - data
+
+  web:
+    build: ./client
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+    networks:
+      - frontend
+
+volumes:
+  feedbox_pgdata:
+
+networks:
+  frontend:
+  data:
+    internal: true
