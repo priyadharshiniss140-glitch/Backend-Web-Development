@@ -1,16 +1,22 @@
-require('dotenv').config();
-const bcrypt = require('bcryptjs');
-const { PrismaClient } = require('@prisma/client');
+require("dotenv").config();
+const bcrypt = require("bcryptjs");
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 async function main() {
-  const passwordHash = await bcrypt.hash('SessionDemo!48', 10);
+  const passwordHash = await bcrypt.hash("SessionDemo!48", 10);
   await prisma.user.upsert({
-    where: { email: 'sam@example.com' },
-    update: { name: 'Sam', passwordHash },
-    create: { name: 'Sam', email: 'sam@example.com', passwordHash },
+    where: { email: "sam@example.com" },
+    update: { name: "Sam", passwordHash },
+    create: { name: "Sam", email: "sam@example.com", passwordHash },
   });
-  console.log('Demo account: sam@example.com / SessionDemo!48');
+  // Avoid printing demo credentials or hashes to logs.
+  console.log("Demo account seeded.");
 }
 
-main().finally(() => prisma.$disconnect());
+main()
+  .catch(() => {
+    console.error("Seed failed.");
+    process.exitCode = 1;
+  })
+  .finally(() => prisma.$disconnect());
