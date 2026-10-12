@@ -3,6 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const authRoutes = require("./routes/authRoutes");
+const HttpError = require("./errors/HttpError");
 
 const cookieSecret = process.env.COOKIE_SECRET;
 if (typeof cookieSecret !== "string" || cookieSecret.length < 32) {
@@ -18,6 +19,15 @@ app.use("/auth", authRoutes);
 // Do not log or send raw Prisma, bcrypt, signing, or session-store errors.
 app.use((error, req, res, next) => {
   if (res.headersSent) return next(error);
+
+  if (error instanceof HttpError) {
+    return res.status(error.status).json({
+      error: {
+        code: error.code,
+        message: error.message,
+      },
+    });
+  }
 
   if (error && (error.type === "entity.parse.failed" || error.status === 400)) {
     return res.status(400).json({
