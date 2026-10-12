@@ -1,0 +1,9 @@
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+
+# Keep real credentials out of Git; commit the example only.
+.env
+.env.*
+!.env.example

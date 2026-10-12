@@ -2,14 +2,20 @@
   "name": "database-integration-starter",
   "version": "1.0.0",
   "private": true,
+  "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",
     "prisma:format": "prisma format",
     "prisma:validate": "prisma validate",
-    "prisma:generate": "prisma generate"
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy",
+    "prisma:seed": "node prisma/seed.js",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^6.9.0",
+    "dotenv": "^16.4.5",
     "express": "^5.1.0"
   },
   "devDependencies": {
