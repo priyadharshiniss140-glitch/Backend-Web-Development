@@ -13,7 +13,8 @@ app.post('/posts', postController.create);
 app.patch('/posts/:id', postController.update);
 app.delete('/posts/:id', postController.remove);
 
-// Do not expose raw Prisma, PostgreSQL, SQL, or stack details to API clients.
+// Preserve known application status/messages (for example, title validation 422).
+// Never send Prisma/PostgreSQL diagnostics, SQL details, or stack traces to clients.
 app.use((error, req, res, next) => {
   const statusCode = Number.isInteger(error.statusCode) &&
     error.statusCode >= 400 && error.statusCode < 500
@@ -49,7 +50,7 @@ async function start() {
     process.once('SIGINT', () => shutdown('SIGINT'));
     process.once('SIGTERM', () => shutdown('SIGTERM'));
   } catch (error) {
-    console.error('❌ Failed to start API. Check DATABASE_URL and database migrations.');
+    console.error('❌ Failed to start API. Check DATABASE_URL and confirm migrations are applied.');
     console.error(error);
     await prisma.$disconnect().catch(() => {});
     process.exitCode = 1;
