@@ -1,7 +1,8 @@
 require('dotenv').config();
 const prisma = require('../src/db/prismaClient');
+const seedPosts = require('../src/data/postSeed');
 
-// Safe, repeatable development seed. It never deletes or resets user data.
+// Idempotent development seed: creates known examples when absent and never wipes data.
 async function main() {
   const owner = await prisma.user.upsert({
     where: { email: 'seed-owner@community.local' },
@@ -9,19 +10,23 @@ async function main() {
     create: { name: 'Seed Owner', email: 'seed-owner@community.local' },
   });
 
-  const seedPosts = [
-    { title: 'First post', body: 'The contract survives storage changes.' },
-    { title: 'Second post', body: 'Migrations record database design.' },
-  ];
-
-  for (const fields of seedPosts) {
+  for (const post of seedPosts) {
     const existing = await prisma.post.findFirst({
-      where: { title: fields.title, authorId: owner.id },
+      where: {
+        title: post.title,
+        body: post.body,
+        authorId: owner.id,
+      },
       select: { id: true },
     });
+
     if (!existing) {
       await prisma.post.create({
-        data: { ...fields, authorId: owner.id },
+        data: {
+          title: post.title,
+          body: post.body || '',
+          authorId: owner.id,
+        },
       });
     }
   }
@@ -33,7 +38,7 @@ main()
     await prisma.$disconnect();
   })
   .catch(async (error) => {
-    console.error('Development seed failed. Check DATABASE_URL and schema migration.');
+    console.error('Development seed failed. Check DATABASE_URL and migrations.');
     console.error(error);
     await prisma.$disconnect();
     process.exitCode = 1;
