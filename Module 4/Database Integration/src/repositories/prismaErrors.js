@@ -1,5 +1,5 @@
-// Translate expected Prisma constraint failures into safe application errors.
-// Other failures are passed through to the HTTP boundary, which masks 5xx details.
+// Translate expected Prisma constraint/validation failures into safe application errors.
+// Unknown failures are passed to the central HTTP boundary, which masks 5xx details.
 function translatePrismaError(error) {
   if (!error || typeof error !== 'object') return error;
 
@@ -15,7 +15,7 @@ function translatePrismaError(error) {
     return safeError;
   }
 
-  if (error.code === 'P2000' || error.code === 'P2011' || error.code === 'P2012') {
+  if (['P2000', 'P2006', 'P2007', 'P2009', 'P2011', 'P2012'].includes(error.code)) {
     const safeError = new Error('One or more fields are invalid');
     safeError.statusCode = 422;
     return safeError;
