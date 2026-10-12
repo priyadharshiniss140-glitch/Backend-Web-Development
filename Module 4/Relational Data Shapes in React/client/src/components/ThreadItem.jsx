@@ -36,7 +36,9 @@ export default function ThreadItem({ thread }) {
       </div>
 
       <p>{thread.body}</p>
-      {!hasAuthor && <p className="meta author-fallback">This thread has no author assigned.</p>}
+      {!hasAuthor && (
+        <p className="todo">This thread has no author assigned.</p>
+      )}
     </li>
   );
 }
