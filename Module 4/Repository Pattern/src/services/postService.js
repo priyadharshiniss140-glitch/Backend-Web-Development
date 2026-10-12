@@ -22,7 +22,7 @@ function createPost(fields) {
   });
 }
 
-function updatePost(id, patch = {}) {
+function updatePost(id, patch) {
   // The service retains the public rule of which fields may be edited.
   const changes = {};
   if (patch.title !== undefined) changes.title = patch.title;
