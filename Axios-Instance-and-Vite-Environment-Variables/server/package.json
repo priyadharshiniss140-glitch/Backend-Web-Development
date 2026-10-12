@@ -1,0 +1,15 @@
+{
+  "name": "fswd-m2-axios-starter-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Express API for the Axios starter.",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.0"
+  }
+}
